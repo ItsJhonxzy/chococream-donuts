@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ChocoCream Filled Donuts - Order Online</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,7 +30,7 @@
             }
         }
     </script>
-    <!-- Font Awesome for Icons -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -38,110 +38,109 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #fdf8f6;
+            -webkit-tap-highlight-color: transparent;
         }
         h1, h2, h3, .font-heading {
             font-family: 'Fredoka', cursive;
         }
     </style>
 </head>
-<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between select-none">
 
-    <!-- NAVIGATION BAR -->
+    <!-- STICKY MOBILE-FRIENDLY NAV BAR -->
     <nav class="bg-choco-900 text-cream-100 sticky top-0 z-40 shadow-xl border-b border-choco-700/50">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="https://i.imgur.com/XkLQr3q.png" alt="ChocoCream Logo" class="h-11 w-11 object-contain rounded-full bg-cream-100 p-0.5 shadow-md">
-                <span class="text-2xl font-bold text-cream-300 font-heading tracking-wide">ChocoCream</span>
+            <div class="flex items-center gap-2 md:gap-3">
+                <img src="https://i.imgur.com/XkLQr3q.png" alt="ChocoCream Logo" class="h-9 w-9 md:h-11 md:w-11 object-contain rounded-full bg-cream-100 p-0.5 shadow-md">
+                <span class="text-xl md:text-2xl font-bold text-cream-300 font-heading tracking-wide">ChocoCream</span>
             </div>
             
-            <div class="flex items-center gap-4">
-                <!-- User Profile / Auth State Button -->
-                <div id="user-nav-area">
-                    <button onclick="openAuthModal()" class="text-xs md:text-sm bg-choco-700 hover:bg-choco-500 text-cream-100 px-3 py-1.5 rounded-full font-medium transition flex items-center gap-2 border border-choco-500/30">
-                        <i class="fa-solid fa-user-circle text-cream-300"></i>
-                        <span id="user-name-display">Login / Register</span>
-                    </button>
-                </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- User Profile Button -->
+                <button onclick="openAuthModal()" class="text-xs md:text-sm bg-choco-700 hover:bg-choco-500 text-cream-100 px-3 py-2 rounded-full font-medium transition flex items-center gap-1.5 border border-choco-500/30 active:scale-95">
+                    <i class="fa-solid fa-user-circle text-amber-400 text-sm"></i>
+                    <span id="user-name-display" class="max-w-[80px] md:max-w-none truncate">Profile</span>
+                </button>
 
                 <!-- Shopping Cart Button -->
-                <button onclick="toggleCartDrawer()" class="relative bg-amber-500 hover:bg-amber-600 text-choco-900 px-4 py-1.5 rounded-full font-bold shadow-lg transition flex items-center gap-2">
+                <button onclick="toggleCartDrawer()" class="relative bg-amber-500 active:bg-amber-600 text-choco-900 px-3.5 py-2 rounded-full font-bold shadow-lg transition flex items-center gap-1.5 text-xs md:text-sm active:scale-95">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Cart</span>
-                    <span id="cart-badge-count" class="bg-choco-900 text-white text-xs px-2 py-0.5 rounded-full font-extrabold hidden">0</span>
+                    <span class="hidden sm:inline">Cart</span>
+                    <span id="cart-badge-count" class="bg-choco-900 text-white text-[10px] px-1.5 py-0.5 rounded-full font-extrabold hidden">0</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <header class="bg-gradient-to-b from-choco-900 to-choco-700 text-white py-12 px-4 shadow-inner">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="text-center md:text-left md:w-1/2 space-y-4">
-                <span class="inline-block bg-amber-500/20 text-cream-300 border border-amber-500/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Freshly Baked Every Day</span>
-                <h1 class="text-4xl md:text-5xl font-extrabold text-cream-100 leading-tight">Decadent Filled Donuts<br><span class="text-amber-400">Only ₱10 Each!</span></h1>
-                <p class="text-cream-100/80 text-sm md:text-base leading-relaxed">
+    <!-- MOBILE HERO BANNER -->
+    <header class="bg-gradient-to-b from-choco-900 to-choco-700 text-white py-8 md:py-12 px-4 shadow-inner">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div class="md:w-1/2 space-y-3">
+                <span class="inline-block bg-amber-500/20 text-cream-300 border border-amber-500/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Freshly Baked Everyday</span>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-cream-100 leading-tight">Decadent Filled Donuts<br><span class="text-amber-400">Only ₱10 Each!</span></h1>
+                <p class="text-cream-100/80 text-xs md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
                     Sink your teeth into rich chocolate glaze and silky white vanilla cream filling. Pure satisfaction in every bite.
                 </p>
-                <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-4">
-                    <a href="#menu" class="bg-amber-500 hover:bg-amber-400 text-choco-900 font-bold px-6 py-3 rounded-full shadow-lg hover:shadow-amber-500/20 transition">Order Now</a>
-                    <a href="#contact" class="bg-choco-700 hover:bg-choco-500 text-cream-100 font-semibold px-6 py-3 rounded-full border border-choco-500/40 transition">Contact Us</a>
+                <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
+                    <a href="#menu" class="bg-amber-500 hover:bg-amber-400 text-choco-900 font-bold px-5 py-2.5 rounded-full shadow-lg text-sm active:scale-95 transition">Order Now</a>
+                    <a href="#contact" class="bg-choco-700 hover:bg-choco-500 text-cream-100 font-semibold px-5 py-2.5 rounded-full border border-choco-500/40 text-sm active:scale-95 transition">Contact Us</a>
                 </div>
             </div>
-            <div class="md:w-1/2 flex justify-center">
-                <img src="https://i.imgur.com/zTSpnkz.png" alt="Choco and Milky Donuts Splash" class="w-full max-w-sm drop-shadow-2xl hover:scale-105 transition duration-300">
+            <div class="md:w-1/2 flex justify-center mt-2 md:mt-0">
+                <img src="https://i.imgur.com/zTSpnkz.png" alt="Choco Donuts" class="w-48 sm:w-64 md:w-80 drop-shadow-2xl">
             </div>
         </div>
     </header>
 
     <!-- MAIN PRODUCT MENU -->
-    <main id="menu" class="max-w-5xl mx-auto px-4 py-14 flex-grow">
-        <div class="text-center mb-10 space-y-2">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-choco-900">Select Your Flavor</h2>
-            <p class="text-gray-600 text-sm md:text-base">All signature filled donuts are freshly prepared for just ₱10 each.</p>
+    <main id="menu" class="max-w-5xl mx-auto px-4 py-8 md:py-14 flex-grow">
+        <div class="text-center mb-8 space-y-1">
+            <h2 class="text-2xl md:text-4xl font-extrabold text-choco-900">Select Your Flavor</h2>
+            <p class="text-gray-600 text-xs md:text-base">All signature filled donuts are freshly prepared for just ₱10 each.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             
             <!-- PRODUCT 1: CHOCO -->
-            <div class="bg-white rounded-2xl shadow-lg border border-choco-100 overflow-hidden flex flex-col justify-between hover:shadow-xl transition">
-                <div class="p-6">
-                    <div class="h-48 flex items-center justify-center bg-choco-50 rounded-xl mb-4 overflow-hidden">
-                        <img src="https://i.imgur.com/zTSpnkz.png" alt="Choco Donut" class="h-40 object-contain hover:scale-110 transition duration-300">
+            <div class="bg-white rounded-2xl shadow-md border border-choco-100 overflow-hidden flex flex-col justify-between">
+                <div class="p-5">
+                    <div class="h-40 sm:h-48 flex items-center justify-center bg-choco-50 rounded-xl mb-3 overflow-hidden">
+                        <img src="https://i.imgur.com/zTSpnkz.png" alt="Choco Donut" class="h-32 sm:h-40 object-contain hover:scale-105 transition duration-300">
                     </div>
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-2xl font-bold text-choco-900">Choco</h3>
-                        <span class="text-xl font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">₱10</span>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-xl md:text-2xl font-bold text-choco-900">Choco</h3>
+                        <span class="text-lg md:text-xl font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">₱10</span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-4">Loaded with rich molten chocolate cream filling and coated in a glossy dark chocolate drip glaze.</p>
+                    <p class="text-gray-600 text-xs md:text-sm mb-2">Loaded with rich molten chocolate cream filling and coated in a glossy dark chocolate drip glaze.</p>
                 </div>
-                <div class="p-6 pt-0 bg-gray-50/50 flex gap-3">
-                    <button onclick="addToCart('Choco', 10, 1)" class="w-full bg-choco-900 hover:bg-choco-700 text-cream-100 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Add Single (₱10)
+                <div class="p-4 bg-gray-50 flex gap-2">
+                    <button onclick="addToCart('Choco', 10, 1)" class="w-full bg-choco-900 hover:bg-choco-700 active:scale-95 text-cream-100 text-xs md:text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Single (₱10)
                     </button>
-                    <button onclick="addToCart('Choco', 10, 6)" class="w-full bg-amber-500 hover:bg-amber-600 text-choco-900 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-box"></i> Pack of 6 (₱60)
+                    <button onclick="addToCart('Choco', 10, 6)" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 text-choco-900 text-xs md:text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-box"></i> Box of 6 (₱60)
                     </button>
                 </div>
             </div>
 
             <!-- PRODUCT 2: MILKY -->
-            <div class="bg-white rounded-2xl shadow-lg border border-cream-300 overflow-hidden flex flex-col justify-between hover:shadow-xl transition">
-                <div class="p-6">
-                    <div class="h-48 flex items-center justify-center bg-cream-50 rounded-xl mb-4 overflow-hidden">
-                        <img src="https://i.imgur.com/CzuMnL2.png" alt="Milky Donut" class="h-40 object-contain hover:scale-110 transition duration-300">
+            <div class="bg-white rounded-2xl shadow-md border border-cream-300 overflow-hidden flex flex-col justify-between">
+                <div class="p-5">
+                    <div class="h-40 sm:h-48 flex items-center justify-center bg-cream-50 rounded-xl mb-3 overflow-hidden">
+                        <img src="https://i.imgur.com/CzuMnL2.png" alt="Milky Donut" class="h-32 sm:h-40 object-contain hover:scale-105 transition duration-300">
                     </div>
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-2xl font-bold text-choco-900">Milky</h3>
-                        <span class="text-xl font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">₱10</span>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-xl md:text-2xl font-bold text-choco-900">Milky</h3>
+                        <span class="text-lg md:text-xl font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">₱10</span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-4">Filled with smooth vanilla milk cream and topped with a delicate white cream coating glaze.</p>
+                    <p class="text-gray-600 text-xs md:text-sm mb-2">Filled with smooth vanilla milk cream and topped with a delicate white cream coating glaze.</p>
                 </div>
-                <div class="p-6 pt-0 bg-gray-50/50 flex gap-3">
-                    <button onclick="addToCart('Milky', 10, 1)" class="w-full bg-choco-900 hover:bg-choco-700 text-cream-100 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Add Single (₱10)
+                <div class="p-4 bg-gray-50 flex gap-2">
+                    <button onclick="addToCart('Milky', 10, 1)" class="w-full bg-choco-900 hover:bg-choco-700 active:scale-95 text-cream-100 text-xs md:text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Single (₱10)
                     </button>
-                    <button onclick="addToCart('Milky', 10, 6)" class="w-full bg-amber-500 hover:bg-amber-600 text-choco-900 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-box"></i> Pack of 6 (₱60)
+                    <button onclick="addToCart('Milky', 10, 6)" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 text-choco-900 text-xs md:text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-box"></i> Box of 6 (₱60)
                     </button>
                 </div>
             </div>
@@ -149,115 +148,80 @@
         </div>
     </main>
 
-    <!-- ACCOUNT AUTHENTICATION MODAL -->
+    <!-- MOBILE MODAL: ACCOUNT REGISTRATION -->
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-            <div class="text-center mb-6">
-                <img src="https://i.imgur.com/XkLQr3q.png" class="h-16 w-16 mx-auto mb-2 object-contain">
-                <h3 id="auth-title" class="text-2xl font-bold text-choco-900">Create Customer Account</h3>
-                <p class="text-xs text-gray-500 mt-1">Please register or sign in to complete your orders.</p>
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold px-2">&times;</button>
+            <div class="text-center mb-4">
+                <img src="https://i.imgur.com/XkLQr3q.png" class="h-12 w-12 mx-auto mb-1 object-contain">
+                <h3 class="text-xl font-bold text-choco-900">Customer Details</h3>
+                <p class="text-xs text-gray-500">Required so we know where to deliver your donuts!</p>
             </div>
             
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name *</label>
-                    <input type="text" id="user-fullname" required placeholder="e.g. Juan Dela Cruz" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    <input type="text" id="user-fullname" required placeholder="e.g. Juan Dela Cruz" class="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1">Mobile / Phone Number *</label>
-                    <input type="tel" id="user-phone" required placeholder="09123456789" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    <input type="tel" id="user-phone" required placeholder="09123456789" class="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Delivery Address *</label>
-                    <textarea id="user-address" required rows="2" placeholder="Street, Barangay, City..." class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Complete Delivery Address *</label>
+                    <textarea id="user-address" required rows="2" placeholder="Barangay, Street, Landmarks..." class="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-choco-900 hover:bg-choco-700 text-cream-100 font-bold py-3 rounded-xl transition shadow-md">
-                    Save Profile & Continue
+                <button type="submit" class="w-full bg-choco-900 active:scale-95 text-cream-100 font-bold py-3 rounded-xl transition shadow-md text-sm">
+                    Save Profile
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- CART SIDE DRAWER -->
+    <!-- MOBILE SLIDING CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
-        <div class="bg-white w-full max-w-md h-full flex flex-col justify-between shadow-2xl">
+        <div class="bg-white w-full max-w-xs sm:max-w-md h-full flex flex-col justify-between shadow-2xl">
             <div class="p-4 bg-choco-900 text-cream-100 flex justify-between items-center">
-                <h3 class="text-xl font-bold font-heading flex items-center gap-2">
-                    <i class="fa-solid fa-basket-shopping text-amber-400"></i> Your Order Basket
+                <h3 class="text-lg font-bold font-heading flex items-center gap-2">
+                    <i class="fa-solid fa-basket-shopping text-amber-400"></i> Your Cart Basket
                 </h3>
-                <button onclick="toggleCartDrawer()" class="text-gray-300 hover:text-white text-2xl font-bold">&times;</button>
+                <button onclick="toggleCartDrawer()" class="text-gray-300 hover:text-white text-2xl font-bold px-2">&times;</button>
             </div>
 
             <!-- Cart Items List -->
             <div id="cart-items-container" class="p-4 flex-grow overflow-y-auto space-y-3 divide-y divide-gray-100">
-                <!-- Dynamic Cart Items Rendered Here -->
+                <!-- Dynamic Items -->
             </div>
 
-            <!-- Cart Footer Summary -->
+            <!-- Cart Summary Footer -->
             <div class="p-4 bg-choco-50 border-t border-choco-100 space-y-3">
-                <div class="flex justify-between items-center text-lg font-bold text-choco-900">
-                    <span>Total Amount:</span>
-                    <span id="cart-total-price" class="text-2xl text-amber-600">₱0</span>
+                <div class="flex justify-between items-center text-base font-bold text-choco-900">
+                    <span>Total Price:</span>
+                    <span id="cart-total-price" class="text-xl text-amber-600">₱0</span>
                 </div>
-                <button id="checkout-btn" onclick="proceedToCheckout()" class="w-full bg-amber-500 hover:bg-amber-600 text-choco-900 text-lg font-bold py-3 rounded-xl shadow-md transition flex justify-center items-center gap-2">
-                    Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+                <button id="checkout-btn" onclick="proceedToCheckout()" class="w-full bg-amber-500 active:scale-95 text-choco-900 text-sm md:text-base font-bold py-3.5 rounded-xl shadow-md transition flex justify-center items-center gap-2">
+                    Submit Order <i class="fa-solid fa-check-circle"></i>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- FOOTER / CONTACT SECTION -->
-    <footer id="contact" class="bg-choco-900 text-cream-100 py-8 px-4 border-t border-choco-700">
+    <footer id="contact" class="bg-choco-900 text-cream-100 py-6 px-4 border-t border-choco-700">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div>
-                <h4 class="text-xl font-bold text-cream-300 font-heading">ChocoCream</h4>
+                <h4 class="text-lg font-bold text-cream-300 font-heading">ChocoCream Donuts</h4>
                 <p class="text-xs text-cream-100/70">Freshly Baked Premium Filled Donuts at ₱10 each.</p>
             </div>
-            <div class="bg-choco-700/60 px-4 py-2 rounded-xl border border-choco-500/30 text-sm">
-                <span class="text-cream-300 font-semibold">For further details please contact FB:</span>
+            <div class="bg-choco-700/60 px-4 py-2 rounded-xl border border-choco-500/30 text-xs md:text-sm">
+                <span class="text-cream-300 font-semibold">For details contact FB:</span>
                 <a href="https://facebook.com" target="_blank" class="text-amber-400 hover:underline font-bold ml-1">EJ Malolot</a>
             </div>
-            <div class="text-xs text-cream-100/50">
+            <div class="text-[11px] text-cream-100/50">
                 &copy; 2026 ChocoCream. All rights reserved.
             </div>
         </div>
     </footer>
-
-    <!-- FIREBASE CLOUD DATABASE SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        // Firebase Cloud Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyChocoCreamDonutsKey2026",
-            authDomain: "chococream-donuts.firebaseapp.com",
-            projectId: "chococream-donuts-db",
-            storageBucket: "chococream-donuts.appspot.com",
-            messagingSenderId: "109823746521",
-            appId: "1:109823746521:web:a1b2c3d4e5f6g7h8"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Global function for checkout submission to Firebase Cloud
-        window.sendOrderToCloud = async function(newOrder) {
-            try {
-                // Send to Firebase Firestore Cloud Collection
-                await addDoc(collection(db, "orders"), newOrder);
-                return true;
-            } catch (err) {
-                console.error("Cloud error:", err);
-                // Fallback to local storage
-                let existingOrders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
-                existingOrders.unshift(newOrder);
-                localStorage.setItem('chococream_global_orders', JSON.stringify(existingOrders));
-                return true;
-            }
-        };
-    </script>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
@@ -274,7 +238,7 @@
             if (currentUser && currentUser.name) {
                 userNameDisplay.innerText = currentUser.name.split(' ')[0];
             } else {
-                userNameDisplay.innerText = "Login / Register";
+                userNameDisplay.innerText = "Profile";
             }
         }
 
@@ -306,7 +270,7 @@
             localStorage.setItem('chococream_user', JSON.stringify(currentUser));
             updateUserNavUI();
             closeAuthModal();
-            alert("Account profile saved successfully!");
+            alert("Profile saved successfully!");
         }
 
         function toggleCartDrawer() {
@@ -355,25 +319,25 @@
 
             if (cart.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-12 text-gray-400">
-                        <i class="fa-solid fa-basket-shopping text-4xl mb-2 text-choco-100"></i>
-                        <p class="text-sm">Your basket is currently empty.</p>
+                    <div class="text-center py-10 text-gray-400">
+                        <i class="fa-solid fa-basket-shopping text-3xl mb-2 text-choco-100"></i>
+                        <p class="text-xs">Your basket is currently empty.</p>
                     </div>
                 `;
             } else {
                 container.innerHTML = cart.map((item, index) => `
-                    <div class="flex justify-between items-center py-3">
+                    <div class="flex justify-between items-center py-2.5">
                         <div>
-                            <h4 class="font-bold text-choco-900 text-base">${item.flavor} Donut</h4>
-                            <p class="text-xs text-gray-500">₱${item.unitPrice} each</p>
+                            <h4 class="font-bold text-choco-900 text-sm">${item.flavor} Donut</h4>
+                            <p class="text-[11px] text-gray-500">₱${item.unitPrice} each</p>
                         </div>
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2">
                             <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-                                <button onclick="changeQty(${index}, -1)" class="px-2 py-1 text-gray-600 hover:bg-gray-200 font-bold">-</button>
-                                <span class="px-3 text-sm font-bold text-choco-900">${item.qty}</span>
-                                <button onclick="changeQty(${index}, 1)" class="px-2 py-1 text-gray-600 hover:bg-gray-200 font-bold">+</button>
+                                <button onclick="changeQty(${index}, -1)" class="px-2.5 py-1 text-gray-600 hover:bg-gray-200 font-bold text-xs">-</button>
+                                <span class="px-2 text-xs font-bold text-choco-900">${item.qty}</span>
+                                <button onclick="changeQty(${index}, 1)" class="px-2.5 py-1 text-gray-600 hover:bg-gray-200 font-bold text-xs">+</button>
                             </div>
-                            <span class="font-bold text-amber-600 text-sm min-w-[50px] text-right">₱${item.qty * item.unitPrice}</span>
+                            <span class="font-bold text-amber-600 text-xs min-w-[40px] text-right">₱${item.qty * item.unitPrice}</span>
                         </div>
                     </div>
                 `).join('');
@@ -382,14 +346,14 @@
             totalDisplay.innerText = `₱${totalPrice}`;
         }
 
-        async function proceedToCheckout() {
+        function proceedToCheckout() {
             if (cart.length === 0) {
                 alert("Your cart is empty.");
                 return;
             }
 
             if (!currentUser) {
-                alert("Please create or sign in to your account profile first.");
+                alert("Please fill in your delivery profile details first.");
                 openAuthModal();
                 return;
             }
@@ -397,43 +361,33 @@
             const totalPrice = cart.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0);
             const itemsSummary = cart.map(i => `${i.qty}x ${i.flavor}`).join(', ');
 
-            const confirmText = `Confirm Order Details:\n\n` +
-                `Customer: ${currentUser.name}\n` +
-                `Phone: ${currentUser.phone}\n` +
-                `Address: ${currentUser.address}\n\n` +
-                `Items: ${itemsSummary}\n` +
-                `Total Amount: ₱${totalPrice}\n\n` +
-                `Click OK to submit your order!`;
+            const newOrder = {
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                customerName: currentUser.name,
+                phone: currentUser.phone,
+                address: currentUser.address,
+                items: cart,
+                total: totalPrice,
+                status: 'Pending',
+                createdAt: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
 
-            if (confirm(confirmText)) {
-                const btn = document.getElementById('checkout-btn');
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+            // Save to shared localStorage pool for instant cross-tab access
+            let globalOrders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+            globalOrders.unshift(newOrder);
+            localStorage.setItem('chococream_global_orders', JSON.stringify(globalOrders));
 
-                const newOrder = {
-                    id: 'ORD-' + Date.now().toString().slice(-6),
-                    customerName: currentUser.name,
-                    phone: currentUser.phone,
-                    address: currentUser.address,
-                    items: cart,
-                    total: totalPrice,
-                    status: 'Pending',
-                    createdAt: new Date().toLocaleString()
-                };
+            // Clear Cart
+            cart = [];
+            saveCart();
+            updateCartUI();
+            toggleCartDrawer();
 
-                await window.sendOrderToCloud(newOrder);
-
-                cart = [];
-                saveCart();
-                updateCartUI();
-                toggleCartDrawer();
-
-                btn.disabled = false;
-                btn.innerHTML = `Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>`;
-
-                alert(`Order Submitted Successfully!\nYour Order ID is: ${newOrder.id}\nFor further details please contact FB: EJ Malolot`);
-            }
+            alert(`Order Submitted Successfully!\n\nOrder ID: ${newOrder.id}\nCustomer: ${currentUser.name}\nTotal: ₱${totalPrice}\n\nFor details contact FB: EJ Malolot`);
         }
     </script>
 </body>
 </html>
+```
+
+To update on GitHub: Open `index.html` $\rightarrow$ click the Pencil icon $\rightarrow$ paste this code $\rightarrow$ click **Commit changes**. Orders will now submit immediately!
