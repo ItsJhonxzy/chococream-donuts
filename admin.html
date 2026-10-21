@@ -3,30 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChocoCream - Admin Cloud Database</title>
-    <!-- Tailwind CSS CDN -->
+    <title>ChocoCream - Admin Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        choco: {
-                            50: '#fdf8f6',
-                            500: '#5c2c16',
-                            700: '#3d1a0b',
-                            900: '#210c04',
-                        },
-                        cream: {
-                            100: '#fdf6e7',
-                            300: '#f7e3ba',
-                        }
+                        choco: { 50: '#fdf8f6', 500: '#5c2c16', 700: '#3d1a0b', 900: '#210c04' },
+                        cream: { 100: '#fdf6e7', 300: '#f7e3ba' }
                     }
                 }
             }
         }
     </script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
@@ -38,8 +28,8 @@
         <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 border border-gray-200">
             <div class="text-center mb-6">
                 <img src="https://i.imgur.com/XkLQr3q.png" alt="Admin Logo" class="h-16 w-16 mx-auto mb-2 object-contain">
-                <h2 class="text-2xl font-bold text-choco-900">Admin Cloud Portal</h2>
-                <p class="text-xs text-gray-500">Sign in to manage live customer orders</p>
+                <h2 class="text-2xl font-bold text-choco-900">Admin Portal</h2>
+                <p class="text-xs text-gray-500">Sign in to manage live orders</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
@@ -61,9 +51,8 @@
         </div>
     </div>
 
-    <!-- MAIN ADMIN DASHBOARD -->
+    <!-- MAIN DASHBOARD -->
     <div id="dashboard-container" class="hidden">
-        <!-- TOP NAV -->
         <nav class="bg-choco-900 text-cream-100 py-3 px-4 md:px-6 shadow-md flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
                 <img src="https://i.imgur.com/XkLQr3q.png" class="h-9 w-9 object-contain rounded-full bg-cream-100 p-0.5">
@@ -74,9 +63,8 @@
             </button>
         </nav>
 
-        <!-- DASHBOARD CONTENT -->
         <main class="max-w-6xl mx-auto px-4 py-6">
-            <!-- METRICS SUMMARY -->
+            <!-- METRICS -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
                     <span class="text-[10px] md:text-xs text-gray-500 font-semibold uppercase">Total Orders</span>
@@ -96,19 +84,18 @@
                 </div>
             </div>
 
-            <!-- ORDERS SECTION -->
+            <!-- TABLE -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center flex-wrap gap-2">
                     <div class="flex items-center gap-2">
-                        <h3 class="font-bold text-base md:text-lg text-choco-900">Cloud Orders Database</h3>
-                        <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Auto-Syncing</span>
+                        <h3 class="font-bold text-base md:text-lg text-choco-900">Live Customer Orders</h3>
+                        <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold animate-pulse">Auto-Syncing</span>
                     </div>
                     <button onclick="fetchCloudOrders()" class="text-xs bg-choco-900 hover:bg-choco-700 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1">
-                        <i class="fa-solid fa-rotate-right"></i> Refresh Now
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
                     </button>
                 </div>
 
-                <!-- DESKTOP TABLE -->
                 <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
@@ -125,7 +112,6 @@
                     </table>
                 </div>
 
-                <!-- MOBILE CARDS VIEW -->
                 <div id="orders-cards-mobile" class="md:hidden divide-y divide-gray-200"></div>
             </div>
             
@@ -135,12 +121,8 @@
         </main>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const BIN_ID = '673d32fae410834d82b43b81';
-        const MASTER_KEY = '$2a$10$iMSpd266eR90z4J/.nI.C.8x3wX5S1HnLgS2V/v.U039qX5iJv5C6';
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
+        const DB_ENDPOINT = 'https://kvdb.io/4yZJ6D9f8JpL3aM1kQ2a7N/chococream_orders';
         let cachedOrders = [];
 
         function checkAuth() {
@@ -148,8 +130,7 @@
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
                 fetchCloudOrders();
-                // Auto-refresh every 8 seconds
-                setInterval(fetchCloudOrders, 8000);
+                setInterval(fetchCloudOrders, 5000); // Sync every 5s
             }
         }
 
@@ -174,30 +155,26 @@
 
         async function fetchCloudOrders() {
             try {
-                const res = await fetch(API_URL + '/latest', {
-                    headers: { 'X-Master-Key': MASTER_KEY }
-                });
-                const data = await res.json();
-                cachedOrders = data.record.orders || [];
-                renderOrders(cachedOrders);
+                const res = await fetch(DB_ENDPOINT);
+                if (res.ok) {
+                    cachedOrders = await res.json();
+                    renderOrders(cachedOrders);
+                }
             } catch (err) {
-                console.error("Cloud fetch error:", err);
+                console.error("Fetch error:", err);
             }
         }
 
         async function saveCloudOrders(orders) {
             try {
-                await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify({ orders })
+                await fetch(DB_ENDPOINT, {
+                    method: 'POST',
+                    body: JSON.stringify(orders),
+                    headers: { 'Content-Type': 'application/json' }
                 });
                 fetchCloudOrders();
             } catch (err) {
-                console.error("Cloud save error:", err);
+                console.error("Save error:", err);
             }
         }
 
