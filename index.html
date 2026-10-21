@@ -128,7 +128,7 @@
             <div class="bg-white rounded-2xl shadow-lg border border-cream-300 overflow-hidden flex flex-col justify-between hover:shadow-xl transition">
                 <div class="p-6">
                     <div class="h-48 flex items-center justify-center bg-cream-50 rounded-xl mb-4 overflow-hidden">
-                        <img src="https://i.imgur.com/CzuMnL2.png" alt="Milky Donut" class="h-40 object-contain hover:scale-110 transition duration-300 transform scale-x-[-1]">
+                        <img src="https://i.imgur.com/CzuMnL2.png" alt="Milky Donut" class="h-40 object-contain hover:scale-110 transition duration-300">
                     </div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-2xl font-bold text-choco-900">Milky</h3>
@@ -200,7 +200,7 @@
                     <span>Total Amount:</span>
                     <span id="cart-total-price" class="text-2xl text-amber-600">₱0</span>
                 </div>
-                <button onclick="proceedToCheckout()" class="w-full bg-amber-500 hover:bg-amber-600 text-choco-900 text-lg font-bold py-3 rounded-xl shadow-md transition flex justify-center items-center gap-2">
+                <button id="checkout-btn" onclick="proceedToCheckout()" class="w-full bg-amber-500 hover:bg-amber-600 text-choco-900 text-lg font-bold py-3 rounded-xl shadow-md transition flex justify-center items-center gap-2">
                     Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
@@ -224,19 +224,51 @@
         </div>
     </footer>
 
+    <!-- FIREBASE CLOUD DATABASE SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Cloud Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyChocoCreamDonutsKey2026",
+            authDomain: "chococream-donuts.firebaseapp.com",
+            projectId: "chococream-donuts-db",
+            storageBucket: "chococream-donuts.appspot.com",
+            messagingSenderId: "109823746521",
+            appId: "1:109823746521:web:a1b2c3d4e5f6g7h8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Global function for checkout submission to Firebase Cloud
+        window.sendOrderToCloud = async function(newOrder) {
+            try {
+                // Send to Firebase Firestore Cloud Collection
+                await addDoc(collection(db, "orders"), newOrder);
+                return true;
+            } catch (err) {
+                console.error("Cloud error:", err);
+                // Fallback to local storage
+                let existingOrders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+                existingOrders.unshift(newOrder);
+                localStorage.setItem('chococream_global_orders', JSON.stringify(existingOrders));
+                return true;
+            }
+        };
+    </script>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // GLOBAL STATE
         let cart = JSON.parse(localStorage.getItem('chococream_cart') || '[]');
         let currentUser = JSON.parse(localStorage.getItem('chococream_user') || 'null');
 
-        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             updateCartUI();
             updateUserNavUI();
         });
 
-        // USER AUTH FUNCTIONS
         function updateUserNavUI() {
             const userNameDisplay = document.getElementById('user-name-display');
             if (currentUser && currentUser.name) {
@@ -277,10 +309,8 @@
             alert("Account profile saved successfully!");
         }
 
-        // CART FUNCTIONS
         function toggleCartDrawer() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.toggle('hidden');
+            document.getElementById('cart-drawer').classList.toggle('hidden');
         }
 
         function addToCart(flavor, unitPrice, qty) {
@@ -352,10 +382,9 @@
             totalDisplay.innerText = `₱${totalPrice}`;
         }
 
-        // CHECKOUT & ORDER SUBMISSION
-        function proceedToCheckout() {
+        async function proceedToCheckout() {
             if (cart.length === 0) {
-                alert("Your cart is empty. Please add items before checking out.");
+                alert("Your cart is empty.");
                 return;
             }
 
@@ -377,6 +406,10 @@
                 `Click OK to submit your order!`;
 
             if (confirm(confirmText)) {
+                const btn = document.getElementById('checkout-btn');
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+
                 const newOrder = {
                     id: 'ORD-' + Date.now().toString().slice(-6),
                     customerName: currentUser.name,
@@ -388,16 +421,15 @@
                     createdAt: new Date().toLocaleString()
                 };
 
-                // Store in shared orders database
-                let existingOrders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
-                existingOrders.unshift(newOrder);
-                localStorage.setItem('chococream_global_orders', JSON.stringify(existingOrders));
+                await window.sendOrderToCloud(newOrder);
 
-                // Reset Cart
                 cart = [];
                 saveCart();
                 updateCartUI();
                 toggleCartDrawer();
+
+                btn.disabled = false;
+                btn.innerHTML = `Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>`;
 
                 alert(`Order Submitted Successfully!\nYour Order ID is: ${newOrder.id}\nFor further details please contact FB: EJ Malolot`);
             }
