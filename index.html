@@ -4,35 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChocoCream Filled Donuts - Order Online</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        choco: {
-                            50: '#fdf8f6',
-                            100: '#f2e8e5',
-                            500: '#5c2c16',
-                            700: '#3d1a0b',
-                            900: '#210c04',
-                        },
-                        cream: {
-                            50: '#fffdfa',
-                            100: '#fdf6e7',
-                            300: '#f7e3ba',
-                            500: '#e3be78',
-                            800: '#6e5218'
-                        }
+                        choco: { 50: '#fdf8f6', 100: '#f2e8e5', 500: '#5c2c16', 700: '#3d1a0b', 900: '#210c04' },
+                        cream: { 50: '#fffdfa', 100: '#fdf6e7', 300: '#f7e3ba', 500: '#e3be78', 800: '#6e5218' }
                     }
                 }
             }
         }
     </script>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fdf8f6; }
@@ -84,7 +69,7 @@
         </div>
     </header>
 
-    <!-- MAIN PRODUCT MENU -->
+    <!-- MAIN MENU -->
     <main id="menu" class="max-w-5xl mx-auto px-4 py-14 flex-grow">
         <div class="text-center mb-10 space-y-2">
             <h2 class="text-3xl md:text-4xl font-extrabold text-choco-900">Select Your Flavor</h2>
@@ -92,8 +77,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            
-            <!-- PRODUCT 1: CHOCO -->
+            <!-- CHOCO -->
             <div class="bg-white rounded-2xl shadow-lg border border-choco-100 overflow-hidden flex flex-col justify-between hover:shadow-xl transition">
                 <div class="p-6">
                     <div class="h-48 flex items-center justify-center bg-choco-50 rounded-xl mb-4 overflow-hidden">
@@ -115,7 +99,7 @@
                 </div>
             </div>
 
-            <!-- PRODUCT 2: MILKY -->
+            <!-- MILKY -->
             <div class="bg-white rounded-2xl shadow-lg border border-cream-300 overflow-hidden flex flex-col justify-between hover:shadow-xl transition">
                 <div class="p-6">
                     <div class="h-48 flex items-center justify-center bg-cream-50 rounded-xl mb-4 overflow-hidden">
@@ -136,18 +120,17 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <!-- ACCOUNT AUTH MODAL -->
+    <!-- AUTH MODAL -->
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <div class="text-center mb-6">
                 <img src="https://i.imgur.com/XkLQr3q.png" class="h-16 w-16 mx-auto mb-2 object-contain">
                 <h3 class="text-2xl font-bold text-choco-900">Customer Details</h3>
-                <p class="text-xs text-gray-500 mt-1">Please enter your info to complete orders.</p>
+                <p class="text-xs text-gray-500 mt-1">Please enter your details to complete your order.</p>
             </div>
             
             <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
@@ -170,7 +153,7 @@
         </div>
     </div>
 
-    <!-- CART SIDE DRAWER -->
+    <!-- CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
         <div class="bg-white w-full max-w-md h-full flex flex-col justify-between shadow-2xl">
             <div class="p-4 bg-choco-900 text-cream-100 flex justify-between items-center">
@@ -194,7 +177,7 @@
         </div>
     </div>
 
-    <!-- FOOTER / CONTACT SECTION -->
+    <!-- FOOTER -->
     <footer id="contact" class="bg-choco-900 text-cream-100 py-8 px-4 border-t border-choco-700">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div>
@@ -211,11 +194,9 @@
         </div>
     </footer>
 
-    <!-- ONLINE CLOUD DATABASE INTEGRATION -->
+    <!-- CLOUD DATA HANDLER (Keyless REST Endpoint) -->
     <script>
-        const BIN_ID = '673d32fae410834d82b43b81';
-        const MASTER_KEY = '$2a$10$iMSpd266eR90z4J/.nI.C.8x3wX5S1HnLgS2V/v.U039qX5iJv5C6';
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        const DB_ENDPOINT = 'https://kvdb.io/4yZJ6D9f8JpL3aM1kQ2a7N/chococream_orders';
 
         let cart = JSON.parse(localStorage.getItem('chococream_cart') || '[]');
         let currentUser = JSON.parse(localStorage.getItem('chococream_user') || 'null');
@@ -345,7 +326,7 @@
             }
 
             if (!currentUser) {
-                alert("Please complete your details first.");
+                alert("Please enter your account details first.");
                 openAuthModal();
                 return;
             }
@@ -353,18 +334,10 @@
             const totalPrice = cart.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0);
             const itemsSummary = cart.map(i => `${i.qty}x ${i.flavor}`).join(', ');
 
-            const confirmText = `Confirm Order Details:\n\n` +
-                `Customer: ${currentUser.name}\n` +
-                `Phone: ${currentUser.phone}\n` +
-                `Address: ${currentUser.address}\n\n` +
-                `Items: ${itemsSummary}\n` +
-                `Total Amount: ₱${totalPrice}\n\n` +
-                `Click OK to submit order!`;
-
-            if (confirm(confirmText)) {
+            if (confirm(`Confirm Order Details:\n\nCustomer: ${currentUser.name}\nPhone: ${currentUser.phone}\nAddress: ${currentUser.address}\n\nItems: ${itemsSummary}\nTotal: ₱${totalPrice}\n\nClick OK to submit!`)) {
                 const btn = document.getElementById('checkout-btn');
                 btn.disabled = true;
-                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting to Cloud...`;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
 
                 const newOrder = {
                     id: 'ORD-' + Date.now().toString().slice(-6),
@@ -378,24 +351,22 @@
                 };
 
                 try {
-                    // Fetch existing cloud orders
-                    const getRes = await fetch(API_URL + '/latest', {
-                        headers: { 'X-Master-Key': MASTER_KEY }
-                    });
-                    const getData = await getRes.json();
-                    let currentOrders = getData.record.orders || [];
+                    // Get current Cloud List
+                    let currentOrders = [];
+                    try {
+                        const res = await fetch(DB_ENDPOINT);
+                        if (res.ok) {
+                            currentOrders = await res.json();
+                        }
+                    } catch (e) {}
 
-                    // Add new order to cloud list
                     currentOrders.unshift(newOrder);
 
-                    // Push updated order list to cloud
-                    await fetch(API_URL, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': MASTER_KEY
-                        },
-                        body: JSON.stringify({ orders: currentOrders })
+                    // Save back to Cloud
+                    await fetch(DB_ENDPOINT, {
+                        method: 'POST',
+                        body: JSON.stringify(currentOrders),
+                        headers: { 'Content-Type': 'application/json' }
                     });
 
                     cart = [];
@@ -403,10 +374,10 @@
                     updateCartUI();
                     toggleCartDrawer();
 
-                    alert(`Order Placed Successfully!\nOrder ID: ${newOrder.id}\nFor further details please contact FB: EJ Malolot`);
+                    alert(`Order Submitted Successfully!\nOrder ID: ${newOrder.id}\nFor further details please contact FB: EJ Malolot`);
                 } catch (err) {
-                    console.error("Cloud Error:", err);
-                    alert("Submission failed. Please check internet connection.");
+                    console.error("Order error:", err);
+                    alert("Order placed offline! Please inform FB: EJ Malolot");
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = `Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>`;
