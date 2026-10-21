@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChocoCream - Admin Database</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        choco: {
+                            50: '#fdf8f6',
+                            500: '#5c2c16',
+                            700: '#3d1a0b',
+                            900: '#210c04',
+                        },
+                        cream: {
+                            100: '#fdf6e7',
+                            300: '#f7e3ba',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 border border-gray-200">
+            <div class="text-center mb-6">
+                <img src="https://i.imgur.com/XkLQr3q.png" alt="Admin Logo" class="h-16 w-16 mx-auto mb-2 object-contain">
+                <h2 class="text-2xl font-bold text-choco-900">Admin Portal</h2>
+                <p class="text-xs text-gray-500">Sign in to manage incoming orders</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Username</label>
+                    <input type="text" id="admin-user" required class="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="admin-pass" required class="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+                <p id="login-error" class="text-red-500 text-xs hidden text-center">Invalid username or password.</p>
+                <button type="submit" class="w-full bg-choco-900 hover:bg-choco-700 text-white font-bold py-2.5 rounded-xl transition">
+                    Access Database
+                </button>
+            </form>
+            <div class="mt-4 text-center">
+                <p class="text-xs text-gray-400">Default: admin / chococream2026</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN DASHBOARD -->
+    <div id="dashboard-container" class="hidden">
+        <!-- TOP NAV -->
+        <nav class="bg-choco-900 text-cream-100 py-3 px-6 shadow-md flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://i.imgur.com/XkLQr3q.png" class="h-10 w-10 object-contain rounded-full bg-cream-100 p-0.5">
+                <span class="text-xl font-bold text-cream-300">ChocoCream Database</span>
+            </div>
+            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">
+                Logout
+            </button>
+        </nav>
+
+        <!-- DASHBOARD CONTENT -->
+        <main class="max-w-6xl mx-auto px-4 py-8">
+            <!-- METRICS SUMMARY -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+                    <span class="text-xs text-gray-500 font-semibold uppercase">Total Orders</span>
+                    <h3 id="stat-total-orders" class="text-3xl font-extrabold text-choco-900 mt-1">0</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+                    <span class="text-xs text-gray-500 font-semibold uppercase">Pending Orders</span>
+                    <h3 id="stat-pending-orders" class="text-3xl font-extrabold text-amber-600 mt-1">0</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+                    <span class="text-xs text-gray-500 font-semibold uppercase">Total Revenue</span>
+                    <h3 id="stat-total-revenue" class="text-3xl font-extrabold text-emerald-600 mt-1">₱0</h3>
+                </div>
+            </div>
+
+            <!-- ORDERS LIST TABLE -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-choco-900">Customer Orders Database</h3>
+                    <button onclick="renderOrders()" class="text-xs bg-choco-900 hover:bg-choco-700 text-white px-3 py-1.5 rounded-lg font-semibold transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Refresh Data
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+                            <tr>
+                                <th class="p-3">Order ID</th>
+                                <th class="p-3">Customer Details</th>
+                                <th class="p-3">Ordered Items</th>
+                                <th class="p-3">Total Amount</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody" class="divide-y divide-gray-100">
+                            <!-- Orders dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mt-6 text-center text-xs text-gray-500">
+                For further details please contact FB: <strong>EJ Malolot</strong>
+            </div>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        function checkAuth() {
+            if (sessionStorage.getItem('chococream_admin_authed') === 'true') {
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('dashboard-container').classList.remove('hidden');
+                renderOrders();
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+
+            if (u === 'admin' && p === 'chococream2026') {
+                sessionStorage.setItem('chococream_admin_authed', 'true');
+                document.getElementById('login-error').classList.add('hidden');
+                checkAuth();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('chococream_admin_authed');
+            location.reload();
+        }
+
+        function renderOrders() {
+            const orders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+            const tbody = document.getElementById('orders-tbody');
+
+            // Render Metrics
+            document.getElementById('stat-total-orders').innerText = orders.length;
+            document.getElementById('stat-pending-orders').innerText = orders.filter(o => o.status === 'Pending').length;
+            document.getElementById('stat-total-revenue').innerText = '₱' + orders.reduce((sum, o) => sum + o.total, 0);
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-gray-400">
+                            No orders found in the database yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = orders.map((order, idx) => {
+                const itemsList = order.items.map(i => `${i.qty}x ${i.flavor}`).join(', ');
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 font-mono font-bold text-xs text-choco-900">${order.id}<br><span class="text-[10px] text-gray-400 font-normal">${order.createdAt}</span></td>
+                        <td class="p-3">
+                            <div class="font-bold text-gray-800">${order.customerName}</div>
+                            <div class="text-xs text-gray-500">${order.phone}</div>
+                            <div class="text-xs text-gray-400 truncate max-w-[180px]">${order.address}</div>
+                        </td>
+                        <td class="p-3 text-xs font-medium text-gray-700">${itemsList}</td>
+                        <td class="p-3 font-bold text-amber-600">₱${order.total}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 text-xs font-bold rounded-full ${getStatusBadgeClass(order.status)}">
+                                ${order.status}
+                            </span>
+                        </td>
+                        <td class="p-3 text-right space-x-1">
+                            <button onclick="updateOrderStatus(${idx}, 'Completed')" class="bg-emerald-600 text-white text-xs px-2 py-1 rounded hover:bg-emerald-700 transition">Complete</button>
+                            <button onclick="deleteOrder(${idx})" class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getStatusBadgeClass(status) {
+            if (status === 'Completed') return 'bg-emerald-100 text-emerald-800';
+            return 'bg-amber-100 text-amber-800';
+        }
+
+        function updateOrderStatus(index, newStatus) {
+            let orders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+            orders[index].status = newStatus;
+            localStorage.setItem('chococream_global_orders', JSON.stringify(orders));
+            renderOrders();
+        }
+
+        function deleteOrder(index) {
+            if (confirm("Are you sure you want to delete this order?")) {
+                let orders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+                orders.splice(index, 1);
+                localStorage.setItem('chococream_global_orders', JSON.stringify(orders));
+                renderOrders();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
+</body>
+</html>
