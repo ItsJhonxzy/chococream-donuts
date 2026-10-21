@@ -67,7 +67,7 @@
         <nav class="bg-choco-900 text-cream-100 py-3 px-6 shadow-md flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img src="https://i.imgur.com/XkLQr3q.png" class="h-10 w-10 object-contain rounded-full bg-cream-100 p-0.5">
-                <span class="text-xl font-bold text-cream-300">ChocoCream Database</span>
+                <span class="text-xl font-bold text-cream-300">ChocoCream Live Database</span>
             </div>
             <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">
                 Logout
@@ -95,10 +95,10 @@
             <!-- ORDERS LIST TABLE -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="font-bold text-lg text-choco-900">Customer Orders Database</h3>
-                    <button onclick="renderOrders()" class="text-xs bg-choco-900 hover:bg-choco-700 text-white px-3 py-1.5 rounded-lg font-semibold transition">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> Refresh Data
-                    </button>
+                    <h3 class="font-bold text-lg text-choco-900">Live Customer Orders</h3>
+                    <span class="text-xs text-emerald-600 font-bold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live Cloud Sync Active
+                    </span>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -126,13 +126,49 @@
         </main>
     </div>
 
+    <!-- FIREBASE REALTIME CLOUD LISTENER -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChocoCreamDonutsKey2026",
+            authDomain: "chococream-donuts.firebaseapp.com",
+            projectId: "chococream-donuts-db",
+            storageBucket: "chococream-donuts.appspot.com",
+            messagingSenderId: "109823746521",
+            appId: "1:109823746521:web:a1b2c3d4e5f6g7h8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let liveOrders = [];
+
+        // Realtime sync listener
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            liveOrders = [];
+            snapshot.forEach((doc) => {
+                liveOrders.push({ firestoreId: doc.id, ...doc.data() });
+            });
+            window.renderOrdersFromCloud(liveOrders);
+        });
+
+        window.updateCloudStatus = async function(docId, newStatus) {
+            await updateDoc(doc(db, "orders", docId), { status: newStatus });
+        };
+
+        window.deleteCloudDoc = async function(docId) {
+            await deleteDoc(doc(db, "orders", docId));
+        };
+    </script>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
         function checkAuth() {
             if (sessionStorage.getItem('chococream_admin_authed') === 'true') {
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
-                renderOrders();
             }
         }
 
@@ -155,27 +191,29 @@
             location.reload();
         }
 
-        function renderOrders() {
-            const orders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+        window.renderOrdersFromCloud = function(orders) {
+            // Also combine local orders if any exist
+            const localOrders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
+            const allOrders = [...orders, ...localOrders];
+
             const tbody = document.getElementById('orders-tbody');
 
-            // Render Metrics
-            document.getElementById('stat-total-orders').innerText = orders.length;
-            document.getElementById('stat-pending-orders').innerText = orders.filter(o => o.status === 'Pending').length;
-            document.getElementById('stat-total-revenue').innerText = '₱' + orders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('stat-total-orders').innerText = allOrders.length;
+            document.getElementById('stat-pending-orders').innerText = allOrders.filter(o => o.status === 'Pending').length;
+            document.getElementById('stat-total-revenue').innerText = '₱' + allOrders.reduce((sum, o) => sum + o.total, 0);
 
-            if (orders.length === 0) {
+            if (allOrders.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6" class="p-8 text-center text-gray-400">
-                            No orders found in the database yet.
+                            No incoming orders yet.
                         </td>
                     </tr>
                 `;
                 return;
             }
 
-            tbody.innerHTML = orders.map((order, idx) => {
+            tbody.innerHTML = allOrders.map((order) => {
                 const itemsList = order.items.map(i => `${i.qty}x ${i.flavor}`).join(', ');
                 return `
                     <tr class="hover:bg-gray-50">
@@ -188,39 +226,20 @@
                         <td class="p-3 text-xs font-medium text-gray-700">${itemsList}</td>
                         <td class="p-3 font-bold text-amber-600">₱${order.total}</td>
                         <td class="p-3">
-                            <span class="px-2 py-1 text-xs font-bold rounded-full ${getStatusBadgeClass(order.status)}">
+                            <span class="px-2 py-1 text-xs font-bold rounded-full ${order.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
                                 ${order.status}
                             </span>
                         </td>
                         <td class="p-3 text-right space-x-1">
-                            <button onclick="updateOrderStatus(${idx}, 'Completed')" class="bg-emerald-600 text-white text-xs px-2 py-1 rounded hover:bg-emerald-700 transition">Complete</button>
-                            <button onclick="deleteOrder(${idx})" class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition"><i class="fa-solid fa-trash"></i></button>
+                            ${order.firestoreId ? `
+                                <button onclick="window.updateCloudStatus('${order.firestoreId}', 'Completed')" class="bg-emerald-600 text-white text-xs px-2 py-1 rounded hover:bg-emerald-700 transition">Complete</button>
+                                <button onclick="window.deleteCloudDoc('${order.firestoreId}')" class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition"><i class="fa-solid fa-trash"></i></button>
+                            ` : `<span class="text-xs text-gray-400">Local</span>`}
                         </td>
                     </tr>
                 `;
             }).join('');
-        }
-
-        function getStatusBadgeClass(status) {
-            if (status === 'Completed') return 'bg-emerald-100 text-emerald-800';
-            return 'bg-amber-100 text-amber-800';
-        }
-
-        function updateOrderStatus(index, newStatus) {
-            let orders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
-            orders[index].status = newStatus;
-            localStorage.setItem('chococream_global_orders', JSON.stringify(orders));
-            renderOrders();
-        }
-
-        function deleteOrder(index) {
-            if (confirm("Are you sure you want to delete this order?")) {
-                let orders = JSON.parse(localStorage.getItem('chococream_global_orders') || '[]');
-                orders.splice(index, 1);
-                localStorage.setItem('chococream_global_orders', JSON.stringify(orders));
-                renderOrders();
-            }
-        }
+        };
 
         window.addEventListener('DOMContentLoaded', checkAuth);
     </script>
